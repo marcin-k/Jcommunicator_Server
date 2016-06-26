@@ -14,7 +14,9 @@ public class FloatingMsg implements Serializable {
     private int specialInfo;
     /* specialInfo: 0 - ignore
                     1 - new connection
-                    2 - close connection
+
+                    8 - check if recipients online
+                    9 - close the connection/thread
     */
     public FloatingMsg(int sender, int recipient, String message, int specialInfo, String sendersFirstName, String sendersLastName){
         this.sender = sender;

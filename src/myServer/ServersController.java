@@ -46,4 +46,11 @@ public class ServersController {
     public Socket getSocket(int address){
         return connectedClients.getSocket(address);
     }
+    public boolean isUserOnline(int address){
+        return logic.checkIfOnline(address);
+    }
+    public void killThread(int address){
+        logic.killThread(address);
+    }
+
 }

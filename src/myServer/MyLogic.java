@@ -16,7 +16,6 @@ public class MyLogic implements Runnable, Serializable{
     int port=0;
     Thread t;
 
-
     // constructor sets socket on the given port
     public MyLogic(int port){
         try {
@@ -30,7 +29,7 @@ public class MyLogic implements Runnable, Serializable{
         }
     }
 //----------------------------Modifications 20JUN----------------------------------
-int numberOfOpenThread = 0;
+
 ForEveryClientThread[] myArry = new ForEveryClientThread[10];
 
 
@@ -51,10 +50,17 @@ ForEveryClientThread[] myArry = new ForEveryClientThread[10];
             // new threat for a client
             //----------------------------Modifications 20JUN---------------------------------
             //new ForEveryClientThread(socket).start();
-            myArry[numberOfOpenThread] = new ForEveryClientThread(socket);
-            myArry[numberOfOpenThread].start();
-            System.out.println("Thread created  "+numberOfOpenThread);
-            numberOfOpenThread++;
+            myArry[0] = new ForEveryClientThread(socket);
+            myArry[0].start();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            int address = myArry[0].getAddress();
+            System.out.println("Thread created  "+address);
+            myArry[address]=myArry[0];
+            myArry[0]=null;
             //----------------------------Modifications 20JUN---------------------------------
         }
 
@@ -73,5 +79,15 @@ ForEveryClientThread[] myArry = new ForEveryClientThread[10];
     }
     public static boolean isItRunning(){
         return Thread.currentThread().isAlive();
+    }
+    public boolean checkIfOnline(int address){
+        if (myArry[address]==null){
+            return false;
+        }
+        else
+            return true;
+    }
+    public void killThread(int address){
+        myArry[address]=null;
     }
 }

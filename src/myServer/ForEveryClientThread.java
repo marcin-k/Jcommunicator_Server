@@ -21,6 +21,7 @@ public class ForEveryClientThread extends Thread {
     ObjectInputStream in = null;
     ObjectOutputStream out = null;
     FloatingMsg msg = null;
+    int address = 0;
 
     public Socket outGoingSocket;
     public void run() {
@@ -47,10 +48,14 @@ public class ForEveryClientThread extends Thread {
             System.out.println(msg.getSender()+" establishes connections" );
             appLog.add("New Connection, remote port: "+incommingSocket.getRemoteSocketAddress());
             ServersController.getInstance().addClient(msg.getSender(), incommingSocket);
+            //initiate the address of the sender, this thread will be stored in address lociation
+            //in the threads array
+            address = msg.getSender();
         }
 
 //-----------------------------------------------------------------------------------------------------
-        while(true) {
+        boolean run = true;
+        while(true && run) {
             //FloatingMsg msg = null;
             try {
                 sleep(500);
@@ -59,22 +64,49 @@ public class ForEveryClientThread extends Thread {
                 appLog.add(msg.getMessage() + " from address: " + msg.getSender() + " to address: " + msg.getRecipient());
                 System.out.println("msg to: " + msg.getRecipient() + " on received port " + incommingSocket.getRemoteSocketAddress());
 
-                outGoingSocket = ServersController.getInstance().getSocket(msg.getRecipient());
-                appLog.add(outGoingSocket + " -port to recipient");
+                //message to close the thread
+                if(msg.getSpecialInfo()==9){
+                    Thread.currentThread().interrupt();
+                    ServersController.getInstance().killThread(msg.getSender());
+                    System.out.println("closing the thread, I hope");
+                }
+                else if(msg.getSpecialInfo()==8){
+                    try {
+                        out = new ObjectOutputStream(incommingSocket.getOutputStream());
+                            if(ServersController.getInstance().isUserOnline(msg.getRecipient())){
+                                out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),"no", 8, "Server",""));
+                            }
+                            else{
+                                out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),"yes", 8, "Server",""));
+                            }
+                        ServersController.getInstance().killThread(msg.getSender());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
 
-                out = new ObjectOutputStream(outGoingSocket.getOutputStream());
-                out.writeObject(msg);
-                // out.writeObject(new FloatingMsg(msg.getSender(), msg.getRecipient(), msg.getMessage(), 0));
+                }
+                else {
+                    outGoingSocket = ServersController.getInstance().getSocket(msg.getRecipient());
+                    appLog.add(outGoingSocket + " -port to recipient");
 
+                    out = new ObjectOutputStream(outGoingSocket.getOutputStream());
+                    out.writeObject(msg);
+                    // out.writeObject(new FloatingMsg(msg.getSender(), msg.getRecipient(), msg.getMessage(), 0));
+                }
+//NullPointerException is thrown if the recipients socket doesn't exist (recipient is not online)
             } catch (NullPointerException e){
                 try {
                     out = new ObjectOutputStream(incommingSocket.getOutputStream());
                     out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),"Offline", 0, "Server",""));
+                    break;
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+//InterruptedException is thrown if thread is to be stopped message with special info 9 is received
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                run = false;
+                break;
             } catch (EOFException e){
                 System.out.println("Client Disconnected");
                 break;
@@ -88,6 +120,9 @@ public class ForEveryClientThread extends Thread {
 
         }
 
+    }
+    public int getAddress(){
+        return address;
     }
 
 }

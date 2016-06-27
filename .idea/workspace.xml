@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57a1cd27-f760-4d42-a12c-230d0d6aff4e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="57a1cd27-f760-4d42-a12c-230d0d6aff4e" name="Default" comment="" />
     <ignored path="Jcommunicator_Server.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -621,7 +619,7 @@
       <option name="presentableId" value="Default" />
       <updated>1466872399048</updated>
       <workItem from="1466872400318" duration="698000" />
-      <workItem from="1466873297984" duration="14404000" />
+      <workItem from="1466873297984" duration="14502000" />
     </task>
     <task id="LOCAL-00001" summary="Logged off user update(user thread killed, referenced removed)">
       <created>1466967721533</created>
@@ -641,7 +639,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15102000" />
+    <option name="totallyTimeSpent" value="15200000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="21" y="27" width="1319" height="824" extended-state="0" />

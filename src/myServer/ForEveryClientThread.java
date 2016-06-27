@@ -4,6 +4,7 @@ import msg.FloatingMsg;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 
 import static myServer.MyLogic.appLog;
 
@@ -54,8 +55,8 @@ public class ForEveryClientThread extends Thread {
         }
 
 //-----------------------------------------------------------------------------------------------------
-        boolean run = true;
-        while(true && run) {
+
+        while(true) {
             //FloatingMsg msg = null;
             try {
                 sleep(500);
@@ -68,6 +69,7 @@ public class ForEveryClientThread extends Thread {
                 if(msg.getSpecialInfo()==9){
                     Thread.currentThread().interrupt();
                     ServersController.getInstance().killThread(msg.getSender());
+                    ServersController.getInstance().removeClient(msg.getSender());
                     System.out.println("closing the thread, I hope");
                 }
                 else if(msg.getSpecialInfo()==8){
@@ -93,19 +95,28 @@ public class ForEveryClientThread extends Thread {
                     out.writeObject(msg);
                     // out.writeObject(new FloatingMsg(msg.getSender(), msg.getRecipient(), msg.getMessage(), 0));
                 }
+//SocketException is thrown if the recipients socket reference the none exist thread
+            } catch (SocketException e){
+                try {
+                    out = new ObjectOutputStream(incommingSocket.getOutputStream());
+                    out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),"User is offline", 0, "Server",""));
+                    System.out.println("SocketException From ForEveryClientThread");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
 //NullPointerException is thrown if the recipients socket doesn't exist (recipient is not online)
             } catch (NullPointerException e){
                 try {
                     out = new ObjectOutputStream(incommingSocket.getOutputStream());
-                    out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),"Offline", 0, "Server",""));
-                    break;
+                    out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),"User is offline", 0, "Server",""));
+                    System.out.println("NullPointerException From ForEveryClientThread");
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
 //InterruptedException is thrown if thread is to be stopped message with special info 9 is received
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                run = false;
+
                 break;
             } catch (EOFException e){
                 System.out.println("Client Disconnected");

@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="57a1cd27-f760-4d42-a12c-230d0d6aff4e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/myServer/ForEveryClientThread.java" afterPath="$PROJECT_DIR$/src/myServer/ForEveryClientThread.java" />
     </list>
     <ignored path="Jcommunicator_Server.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -622,7 +621,7 @@
       <option name="presentableId" value="Default" />
       <updated>1466872399048</updated>
       <workItem from="1466872400318" duration="698000" />
-      <workItem from="1466873297984" duration="13957000" />
+      <workItem from="1466873297984" duration="14404000" />
     </task>
     <task id="LOCAL-00001" summary="Logged off user update(user thread killed, referenced removed)">
       <created>1466967721533</created>
@@ -631,11 +630,18 @@
       <option name="project" value="LOCAL" />
       <updated>1466967721533</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Logged off user update(user thread killed, referenced removed)">
+      <created>1467051098005</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1467051098005</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14655000" />
+    <option name="totallyTimeSpent" value="15102000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="21" y="27" width="1319" height="824" extended-state="0" />

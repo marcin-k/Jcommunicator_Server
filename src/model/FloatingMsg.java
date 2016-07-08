@@ -1,4 +1,4 @@
-package msg;
+package model;
 
 import java.io.Serializable;
 
@@ -14,9 +14,7 @@ public class FloatingMsg implements Serializable {
     private int specialInfo;
     /* specialInfo: 0 - ignore
                     1 - new connection
-
-                    8 - check if recipients online
-                    9 - close the connection/thread
+                    2 - close connection
     */
     public FloatingMsg(int sender, int recipient, String message, int specialInfo, String sendersFirstName, String sendersLastName){
         this.sender = sender;

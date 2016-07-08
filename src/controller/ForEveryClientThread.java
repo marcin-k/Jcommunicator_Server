@@ -1,12 +1,10 @@
-package myServer;
+package controller;
 
-import msg.FloatingMsg;
+import model.FloatingMsg;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-
-import static myServer.MyLogic.appLog;
 
 /**
  * Created by marcin on 18/06/2016.
@@ -47,7 +45,7 @@ public class ForEveryClientThread extends Thread {
         else{
             //record user address and socket
             System.out.println(msg.getSender()+" establishes connections" );
-            appLog.add("New Connection, remote port: "+incommingSocket.getRemoteSocketAddress());
+            MyLogic.appLog.add("New Connection, remote port: "+incommingSocket.getRemoteSocketAddress());
             ServersController.getInstance().addClient(msg.getSender(), incommingSocket);
             //initiate the address of the sender, this thread will be stored in address lociation
             //in the threads array
@@ -62,8 +60,9 @@ public class ForEveryClientThread extends Thread {
                 sleep(500);
                 in = new ObjectInputStream(incommingSocket.getInputStream());
                 msg = (FloatingMsg) in.readObject();
-                appLog.add(msg.getMessage() + " from address: " + msg.getSender() + " to address: " + msg.getRecipient());
-                System.out.println("msg to: " + msg.getRecipient() + " on received port " + incommingSocket.getRemoteSocketAddress());
+                MyLogic.appLog.add(msg.getMessage() + " from address: " + msg.getSender() + " to address: " + msg.getRecipient());
+                System.out.println("msg to: " + msg.getRecipient() + " on received port " + incommingSocket.getRemoteSocketAddress()
+                +" msg: "+msg.getMessage()+" special info: "+msg.getSpecialInfo());
 
                 //message to close the thread
                 if(msg.getSpecialInfo()==9){
@@ -72,24 +71,37 @@ public class ForEveryClientThread extends Thread {
                     ServersController.getInstance().removeClient(msg.getSender());
                     System.out.println("closing the thread, I hope");
                 }
+                //checks msg.getRecipients availability
                 else if(msg.getSpecialInfo()==8){
                     try {
+                        //Thread.sleep(4000);
                         out = new ObjectOutputStream(incommingSocket.getOutputStream());
-                            if(ServersController.getInstance().isUserOnline(msg.getRecipient())){
-                                out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),"no", 8, "Server",""));
-                            }
-                            else{
-                                out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),"yes", 8, "Server",""));
-                            }
-                        ServersController.getInstance().killThread(msg.getSender());
+                        //System.out.println(ServersController.getInstance().getOpenThreads());
+                        if(ServersController.getInstance().isUserOnline(msg.getRecipient())){
+                            out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),
+                                    ServersController.getInstance().getClient(msg.getRecipient()).getDescription()
+                                    , 8, "Server","available"));
+                        }
+                        else{
+                            out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),
+            //TODO: create file for storing statuses of logged off users, replace offline with entry from that file
+                                    "offline"
+                                    , 8, "Server","notAvailable"));
+                        }
+                        //ServersController.getInstance().killThread(msg.getSender());
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-
+                }
+                //sets a description for a client
+                else if(msg.getSpecialInfo()==2){
+                    ServersController.getInstance().getClient(msg.getSender()).setDescription(msg.getMessage());
+                    System.out.println(msg.getMessage());
                 }
                 else {
-                    outGoingSocket = ServersController.getInstance().getSocket(msg.getRecipient());
-                    appLog.add(outGoingSocket + " -port to recipient");
+                    //outGoingSocket = ServersController.getInstance().getSocket(msg.getRecipient());
+                    outGoingSocket = ServersController.getInstance().getClient(msg.getRecipient()).getSocket();
+                    MyLogic.appLog.add(outGoingSocket + " -port to recipient");
 
                     out = new ObjectOutputStream(outGoingSocket.getOutputStream());
                     out.writeObject(msg);
@@ -101,6 +113,8 @@ public class ForEveryClientThread extends Thread {
                     out = new ObjectOutputStream(incommingSocket.getOutputStream());
                     out.writeObject(new FloatingMsg(msg.getRecipient(),msg.getSender(),"User is offline", 0, "Server",""));
                     System.out.println("SocketException From ForEveryClientThread");
+                } catch (SocketException brokenPipe){
+                    System.out.println("pipe broken");
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -120,6 +134,7 @@ public class ForEveryClientThread extends Thread {
                 break;
             } catch (EOFException e){
                 System.out.println("Client Disconnected");
+                ServersController.getInstance().killThread(msg.getSender());
                 break;
             } catch (IOException e) {
                 e.printStackTrace();

@@ -1,6 +1,7 @@
-package myServer;
+package controller;
 
 import javafx.collections.ObservableList;
+import model.MyList;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -30,10 +31,28 @@ public class MyLogic implements Runnable, Serializable{
     }
 //----------------------------Modifications 20JUN----------------------------------
 
-ForEveryClientThread[] myArry = new ForEveryClientThread[10];
+ForEveryClientThread[] clientThreadArray = new ForEveryClientThread[10];
+
+    public String getOpenThreads(){
+        String threadInfo = "+-----------------------------------------------------------+"+System.getProperty("line.separator");
+        int i =0;
+        for(Thread t: clientThreadArray){
+            if(t==null){
+                threadInfo += i+" - is off" + System.getProperty("line.separator");
+            }
+            else{
+                threadInfo += i+" - is on" + System.getProperty("line.separator");
+            }
+            i++;
+        }
+        threadInfo += "+-----------------------------------------------------------+";
+        return threadInfo;
+    }
 
 
-
+    public ForEveryClientThread[] getThreads(){
+        return clientThreadArray;
+    }
 //----------------------------Modifications 20JUN---------------------------------
     public void run() {
         appLog.add("Waiting for client on port " + port + "...");
@@ -50,17 +69,18 @@ ForEveryClientThread[] myArry = new ForEveryClientThread[10];
             // new threat for a client
             //----------------------------Modifications 20JUN---------------------------------
             //new ForEveryClientThread(socket).start();
-            myArry[0] = new ForEveryClientThread(socket);
-            myArry[0].start();
+            clientThreadArray[0] = new ForEveryClientThread(socket);
+            clientThreadArray[0].start();
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            int address = myArry[0].getAddress();
+            int address = clientThreadArray[0].getAddress();
             System.out.println("Thread created  "+address);
-            myArry[address]=myArry[0];
-            myArry[0]=null;
+            System.out.println("I expect that to happen only once for each client");
+            clientThreadArray[address]= clientThreadArray[0];
+            clientThreadArray[0]=null;
             //----------------------------Modifications 20JUN---------------------------------
         }
 
@@ -81,13 +101,14 @@ ForEveryClientThread[] myArry = new ForEveryClientThread[10];
         return Thread.currentThread().isAlive();
     }
     public boolean checkIfOnline(int address){
-        if (myArry[address]==null){
+        if (clientThreadArray[address]==null){
             return false;
         }
         else
             return true;
     }
     public void killThread(int address){
-        myArry[address]=null;
+        System.out.println("killing thread "+address);
+        clientThreadArray[address]=null;
     }
 }

@@ -1,7 +1,8 @@
-package myServer;
+package controller;
 
 import javafx.collections.ObservableList;
-import myServer.model.ArrayOfClients;
+import model.ArrayOfClients;
+import model.Client;
 
 import java.net.Socket;
 
@@ -12,10 +13,12 @@ public class ServersController {
 //------------Singleton elements of the class---------------------
     private static ServersController instance = null;
     private ArrayOfClients connectedClients;
+    private static MyLogic logic;
+
+    //Constructor
     private ServersController(){
         connectedClients = new ArrayOfClients();
     }
-    private static MyLogic logic;
 
     public static ServersController getInstance(){
         if(instance==null){
@@ -43,8 +46,9 @@ public class ServersController {
     public void removeClient(int position){
         connectedClients.removeClient(position);
     }
-    public Socket getSocket(int address){
-        return connectedClients.getSocket(address);
+
+    public Client getClient(int address){
+        return connectedClients.getClient(address);
     }
     public boolean isUserOnline(int address){
         return logic.checkIfOnline(address);

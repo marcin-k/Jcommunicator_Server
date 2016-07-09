@@ -30,31 +30,38 @@ public class ClientsThread extends Thread {
 //-------------------------------Run Method-------------------------------------------------------------------------
     public void run() {
         //----------------------------Trying to catch Hello packet from client--------------------------
-        try {
-            in = new ObjectInputStream(incomingSocket.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         FloatingMsg msg = null;
         try {
+            in = new ObjectInputStream(incomingSocket.getInputStream());
             msg = (FloatingMsg) in.readObject();
-        } catch (IOException e) {
+            if(msg.getSpecialInfo()!=1){
+                System.out.println("communication error");
+            }
+            else{
+                //record user address and socket
+                System.out.println(msg.getSender()+" establishes connections" );
+                Logic.appLog.add("New Connection, remote port: "+ incomingSocket.getRemoteSocketAddress());
+                ServersController.getInstance().addClient(msg.getSender(), incomingSocket);
+                //initiate the address of the sender, this thread will be stored at address position
+                //in the threads array
+                address = msg.getSender();
+            }
+        }
+        catch (EOFException e){
+            Thread.interrupted();
+            System.out.println("Thread interrupted");
+        }
+        catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        }
+        //Thread not initialised
+        catch(NullPointerException e){
+            ServersController.getInstance().killAllThreads();
+        }
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if(msg.getSpecialInfo()!=1){
-            System.out.println("communication error");
-        }
-        else{
-            //record user address and socket
-            System.out.println(msg.getSender()+" establishes connections" );
-            Logic.appLog.add("New Connection, remote port: "+ incomingSocket.getRemoteSocketAddress());
-            ServersController.getInstance().addClient(msg.getSender(), incomingSocket);
-            //initiate the address of the sender, this thread will be stored at address position
-            //in the threads array
-            address = msg.getSender();
-        }
+
         //------------------------------------------------------------------------------------------------
         while(true) {
             //FloatingMsg msg = null;

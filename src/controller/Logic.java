@@ -68,6 +68,11 @@ public class Logic implements Runnable, Serializable{
     public void run() {
         appLog.add("Waiting for client on port " + port + "...");
         Socket socket = null;
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         while (true) {
             try {
                 socket = serverSocket.accept();
@@ -119,6 +124,18 @@ public class Logic implements Runnable, Serializable{
     //removes a reference to client
     public void killThread(int address){
         appLog.add("killing thread "+address);
+        clientThreadArray[address].interrupt();
         clientThreadArray[address]=null;
     }
+
+    //kills all threads
+    public void killAllThreads(){
+        for(ClientsThread t :clientThreadArray){
+            if(t!=null){
+                t.interrupt();
+                clientThreadArray[t.getAddress()]=null;
+            }
+        }
+    }
+
 }

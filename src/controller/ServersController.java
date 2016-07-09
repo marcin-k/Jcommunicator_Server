@@ -74,4 +74,9 @@ public class ServersController {
         logic.killThread(address);
     }
 
+    //Kills all clients threads
+    public void killAllThreads(){
+        logic.killAllThreads();
+    }
+
 }

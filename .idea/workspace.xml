@@ -718,7 +718,7 @@
       <workItem from="1468016479740" duration="985000" />
       <workItem from="1468069642738" duration="966000" />
       <workItem from="1468071220616" duration="2974000" />
-      <workItem from="1468530818086" duration="17000" />
+      <workItem from="1468530818086" duration="79000" />
     </task>
     <task id="LOCAL-00001" summary="Logged off user update(user thread killed, referenced removed)">
       <created>1466967721533</created>
@@ -755,11 +755,18 @@
       <option name="project" value="LOCAL" />
       <updated>1468079689233</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Final changes">
+      <created>1468530851688</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1468530851688</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="63513000" />
+    <option name="totallyTimeSpent" value="63575000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="18" y="31" width="1288" height="822" extended-state="0" />
@@ -800,7 +807,8 @@
     <MESSAGE value="Logged off user update(user thread killed, referenced removed)" />
     <MESSAGE value="Code cleanup" />
     <MESSAGE value="Comments added" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comments added" />
+    <MESSAGE value="Final changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Final changes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

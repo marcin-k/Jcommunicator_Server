@@ -16,6 +16,7 @@ import java.net.Socket;
  * - maintains a status of each connection
  * - determines the online/offline users
  */
+@SuppressWarnings("serial")
 public class Logic implements Runnable, Serializable{
     //Socket on the server listening for connections
     private ServerSocket serverSocket;
